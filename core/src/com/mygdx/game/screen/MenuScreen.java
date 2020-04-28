@@ -13,13 +13,15 @@ public class MenuScreen extends BaseScreen {
     private Vector2 n;
     private Vector2 touch;
 
+    private float gravity = 0.02f;
+
 
 
     @Override
     public void render(float delta) {
         super.render(delta);
         pos.add(v);
-        g.y -= 0.02f;
+        g.y -= gravity;
         pos.add(g);
         v.add(n);
         batch.begin();
@@ -45,21 +47,5 @@ public class MenuScreen extends BaseScreen {
         img.dispose();
         super.dispose();
     }
-
-    private boolean checkCollision(int x, int y) {
-        return (x > pos.x && x < pos.x + sprite.getWidth()) &&
-                (y > pos.y && y < pos.y + sprite.getHeight());
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, screenY);
-        System.out.println("mouse x:"+screenX+" y:"+screenY);
-        System.out.println("pos.x:"+(pos.x+sprite.getWidth())+" pos.y:"+(pos.y + sprite.getHeight()));
-        if (checkCollision(screenX,screenY)) {
-            v.set(0,0);
-            g.set(0,0);
-        }
-        return super.touchDown(screenX, screenY, pointer, button);
-    }
+    
 }
