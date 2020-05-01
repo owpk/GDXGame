@@ -54,7 +54,6 @@ public class MenuScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        System.out.println("TOUCH");
         logo.getV().set(touch.cpy().sub(logo.pos));
         logo.getV().setLength(Sprite.V_LEN * touch.cpy().sub(logo.pos).len());
         logo.getG().y = 0;
