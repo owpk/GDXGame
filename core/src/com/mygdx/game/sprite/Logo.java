@@ -20,10 +20,16 @@ public class Logo extends Sprite {
         this.pos.set(worldBounds.pos);
     }
 
-    public void set(Vector2 touch) {
-
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        v.set(touch.cpy().sub(pos));
+        v.setLength(V_LEN * touch.cpy().sub(pos).len());
+        g.y = 0;
+        pos.set(touch);
+        return super.touchDown(touch, pointer, button);
     }
-//
+
+    //
 //        return super.touchDown(touch, pointer, button);
 
 }
