@@ -1,5 +1,6 @@
 package com.mygdx.game.screen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.base.BaseScreen;
@@ -9,10 +10,10 @@ public class MenuScreen extends BaseScreen {
     private Texture sprite;
     private Vector2 pos;
     private Vector2 v;
-    private Vector2 g;
-    private Vector2 n;
     private Vector2 touch;
+    private static float V_LEN = 0.005f;
 
+    private float y;
     private float gravity = 0.02f;
 
 
@@ -21,9 +22,7 @@ public class MenuScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
         pos.add(v);
-        g.y -= gravity;
-        pos.add(g);
-        v.add(n);
+        pos.add(0, y -= gravity);
         batch.begin();
         batch.draw(img, 0, 0);
         batch.draw(sprite, pos.x, pos.y);
@@ -37,9 +36,8 @@ public class MenuScreen extends BaseScreen {
         sprite = new Texture("badlogic.jpg");
         pos = new Vector2(0, 0);
         v = new Vector2(2, 2);
-        n = new Vector2(0.01f,0);
-        g = new Vector2(0, 0);
         touch = new Vector2();
+
     }
 
     @Override
@@ -48,21 +46,14 @@ public class MenuScreen extends BaseScreen {
         super.dispose();
     }
 
-    private boolean checkCollision(int x, int y) {
-        return (x > pos.x && x < pos.x + sprite.getWidth()) &&
-                (y > pos.y && y < pos.y + sprite.getHeight());
-    }
-
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, screenY);
-        System.out.println("mouse x:"+screenX+" y:"+screenY);
-        System.out.println("pos.x:"+(pos.x+sprite.getWidth())+" pos.y:"+(pos.y + sprite.getHeight()));
-        if (checkCollision(screenX,screenY)) {
-            v.set(0,0);
-            g.set(0,0);
-        }
+        touch.set(screenX - (float) sprite.getWidth()/2, Gdx.graphics.getHeight() - screenY - (float) sprite.getHeight()/2);
+        v.set(touch.cpy().sub(pos));
+        v.setLength(V_LEN * touch.cpy().sub(pos).len());
+        pos.set(touch);
+        y = 0;
         return super.touchDown(screenX, screenY, pointer, button);
     }
     
