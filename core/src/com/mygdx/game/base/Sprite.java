@@ -13,9 +13,22 @@ public class Sprite extends Rect {
     protected TextureRegion[] regions;
     protected int frame = 0;
 
+    protected Vector2 v;
+    protected Vector2 g;
+    protected float speed = 0.003f;
+    protected float gravity = 0.0002f;
+
+    public static float V_LEN = 0.005f;
+
     public Sprite(TextureRegion region) {
+        v = new Vector2(speed,speed);
+        g = new Vector2(0, gravity);
         regions = new TextureRegion[1];
         regions[0] = region;
+    }
+
+    public float setGravity() {
+        return g.y -= gravity;
     }
 
     public void setHeightProportion(float height) {
@@ -39,11 +52,15 @@ public class Sprite extends Rect {
         );
     }
 
-    public void resize(Rect worldBounds) {
+    public Vector2 getV() {
+        return v;
     }
 
-    public boolean touchDown(Vector2 touch, int pointer, int button) {
-        return false;
+    public Vector2 getG() {
+        return g;
+    }
+
+    public void resize(Rect worldBounds) {
     }
 
     public boolean touchUp(Vector2 touch, int pointer, int button) {

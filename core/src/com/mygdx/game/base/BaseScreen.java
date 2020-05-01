@@ -104,7 +104,9 @@ public class BaseScreen implements Screen, InputProcessor {
     }
 
     public boolean touchDown(Vector2 touch, int pointer, int button) {
+        System.out.println("TOUCH FROM BASE");
         System.out.println("touchDown touch.x = " + touch.x + " touch.y = " + touch.y);
+
         return false;
     }
 
