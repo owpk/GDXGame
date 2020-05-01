@@ -1,12 +1,12 @@
 package com.mygdx.game.screen;
 
 
-import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.base.BaseScreen;
-import com.mygdx.game.base.Sprite;
+
 import com.mygdx.game.math.Rect;
 import com.mygdx.game.sprite.Background;
 import com.mygdx.game.sprite.Logo;
@@ -39,9 +39,7 @@ public class MenuScreen extends BaseScreen {
         batch.begin();
         background.draw(batch);
         logo.draw(batch);
-        logo.pos.add(logo.getV());
-        logo.pos.add(logo.getG());
-        logo.setGravity();
+        logo.move();
         batch.end();
     }
 
