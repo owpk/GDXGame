@@ -9,8 +9,6 @@ public class MenuScreen extends BaseScreen {
     private Texture sprite;
     private Vector2 pos;
     private Vector2 v;
-    private Vector2 g;
-    private Vector2 n;
     private Vector2 touch;
 
     private float gravity = 0.02f;
@@ -21,9 +19,6 @@ public class MenuScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
         pos.add(v);
-        g.y -= gravity;
-        pos.add(g);
-        v.add(n);
         batch.begin();
         batch.draw(img, 0, 0);
         batch.draw(sprite, pos.x, pos.y);
@@ -33,12 +28,11 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
+        batch.getProjectionMatrix().idt();
         img = new Texture("cyan gradient.png");
         sprite = new Texture("badlogic.jpg");
         pos = new Vector2(0, 0);
         v = new Vector2(2, 2);
-        n = new Vector2(0.01f,0);
-        g = new Vector2(0, 0);
         touch = new Vector2();
     }
 

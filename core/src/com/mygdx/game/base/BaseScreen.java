@@ -65,21 +65,18 @@ public class BaseScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
-        System.out.println("key "+character);
         return false;
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         //touch screen our mouse clicked;
-        //System.out.println("tDwn "+screenX + " : " + screenY);
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         //touch screen our mouse clicked up;
-        //System.out.println("tUp "+screenX + " : " + screenY);
         return false;
     }
 
