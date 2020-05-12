@@ -1,6 +1,9 @@
 package com.mygdx.game.math;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.compression.lzma.Base;
+import com.mygdx.game.base.BaseScreen;
+import com.mygdx.game.screen.MenuScreen;
 
 /**
  * Прямоугольник
