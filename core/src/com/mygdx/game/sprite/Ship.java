@@ -12,7 +12,7 @@ public class Ship extends Sprite {
     private boolean pressed;
 
     public Ship(TextureAtlas atlas) {
-        super(atlas.findRegion("main_ship"));
+        super(atlas.findRegion("ship_2"));
     }
 
     @Override
@@ -22,11 +22,11 @@ public class Ship extends Sprite {
     }
 
     private void posAdd() {
-        position += 0.001f;
+        position += 0.0014f;
     }
 
     private void posSub() {
-        position -= 0.001f;
+        position -= 0.0014f;
     }
 
     public void keyListener(int keycode) {

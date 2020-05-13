@@ -16,7 +16,7 @@ public class GameScreen extends BaseScreen {
     private Texture bg;
     private Background background;
     private Ship ship;
-    private TextureAtlas mainGameAtlas;
+    private TextureAtlas shipAtlas;
     private TextureAtlas atlas;
     private Star[] stars;
     private int keycode;
@@ -26,9 +26,9 @@ public class GameScreen extends BaseScreen {
         super.show();
         bg = new Texture("cyan gradient.png");
         background = new Background(bg);
-        mainGameAtlas = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
+        shipAtlas = new TextureAtlas(Gdx.files.internal("textures/ship.tpack"));
         atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
-        ship = new Ship(mainGameAtlas);
+        ship = new Ship(shipAtlas);
         stars = new Star[256];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
@@ -54,7 +54,7 @@ public class GameScreen extends BaseScreen {
     @Override
     public void dispose() {
         bg.dispose();
-        mainGameAtlas.dispose();
+        shipAtlas.dispose();
         atlas.dispose();
         super.dispose();
     }
