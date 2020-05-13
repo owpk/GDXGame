@@ -12,12 +12,7 @@ public enum KeySet {
         this.keycode = keyCode;
     }
 
-    //как то можно включить поддержку stream ?
     public boolean contain(int key) {
-        for (int k : keycode) {
-            if (k == key)
-                return true;
-        }
-        return false;
+        return key == keycode[0] || key == keycode[1];
     }
 }
