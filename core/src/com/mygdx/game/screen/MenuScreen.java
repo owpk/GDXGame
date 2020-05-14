@@ -77,8 +77,8 @@ public class MenuScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        logo.draw(batch);
-        logo.move();
+//        logo.draw(batch);
+//        logo.move();
         buttonExit.draw(batch);
         buttonPlay.draw(batch);
         batch.end();
