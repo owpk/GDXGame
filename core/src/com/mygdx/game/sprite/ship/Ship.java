@@ -1,5 +1,6 @@
 package com.mygdx.game.sprite.ship;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -26,12 +27,12 @@ public class Ship extends Sprite {
     protected final Vector2 v1;
     protected final Explosion explosion;
 
+
     public Ship(TextureRegion region, int rows, int cols, int frames, BulletPool bulletPool) {
         super(region, rows, cols, frames);
         this.bulletPool = bulletPool;
         v1 = new Vector2();
         explosion = new Explosion();
-
     }
 
     protected void stop() {
@@ -64,8 +65,8 @@ public class Ship extends Sprite {
 
     protected void playDestroyAnimation() {
         regions = Explosion.getTextureRegions();
-        animateTimer += 0.4f;
-        if (animateTimer >= animateInterval) {
+        animateTimer += 0.1f;
+        if (animateTimer >= explosion.getAnimationInterval()) {
             if (frame < regions.length - 1)
                 frame++;
             animateTimer = 0f;
@@ -80,6 +81,10 @@ public class Ship extends Sprite {
             shoot();
         if(checkCollision()) {
             destroyed = true;
+        }
+        if(destroyed) {
+            if (!explosion.isPlaying())
+                explosion.playExplosionSFX();
             playDestroyAnimation();
         }
     }
