@@ -12,8 +12,6 @@ import com.mygdx.game.base.Sprite;
 import com.mygdx.game.math.Rect;
 
 public class Bullet extends Sprite {
-
-
     private Rect worldBounds;
     private int damage;
     private Sprite owner;
