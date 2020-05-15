@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import com.mygdx.game.math.Rect;
+import com.mygdx.game.utils.Regions;
+
+import javax.swing.plaf.synth.Region;
 
 public class Sprite extends Rect {
 
@@ -17,18 +20,23 @@ public class Sprite extends Rect {
     protected Vector2 g;
     protected float speed = 0.003f;
     protected float gravity = 0.0002f;
+    protected boolean destroyed;
 
     public static float V_LEN = 0.005f;
 
     public Sprite(TextureRegion region) {
-        v = new Vector2(speed,speed);
+        v = new Vector2(speed, speed);
         g = new Vector2(0, gravity);
         regions = new TextureRegion[1];
         regions[0] = region;
     }
 
-    public float setGravity() {
-        return g.y -= gravity;
+    public Sprite() {
+
+    }
+
+    public Sprite(TextureRegion region, int rows, int cols, int frames) {
+        regions = Regions.split(region, rows, cols, frames);
     }
 
     public void setHeightProportion(float height) {
@@ -62,6 +70,11 @@ public class Sprite extends Rect {
 
     public void resize(Rect worldBounds) {
     }
+
+    public float setGravity() {
+        return g.y -= gravity;
+    }
+
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         return false;
     }
@@ -88,5 +101,17 @@ public class Sprite extends Rect {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
+    }
+
+    public void destroy() {
+        destroyed = true;
+    }
+
+    public void flushDestroy() {
+        destroyed = false;
     }
 }
