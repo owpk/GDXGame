@@ -11,6 +11,9 @@ import com.mygdx.game.screen.KeySet;
 
 public class Ship extends Sprite {
 
+    private float animateTimer;
+    private float animateInterval = 0.7f;
+
     private static final float SIZE = 0.15f;
     private static final float MARGIN = 0.05f;
 
@@ -22,8 +25,7 @@ public class Ship extends Sprite {
 
     private int keycode;
 
-    private float animateTimer;
-    private float animateInterval = 0.5f;
+
 
     private static final int INVALID_POINTER = -1;
 
@@ -48,6 +50,10 @@ public class Ship extends Sprite {
 
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
+    }
+
+    public void setBulletV(float speed) {
+        v.y = speed;
     }
 
     @Override
@@ -86,7 +92,8 @@ public class Ship extends Sprite {
     public void update(float delta) {
         if (!pressed)
         keyListener(keycode);
-        
+
+        shoot();
 
         pos.mulAdd(v1, delta);
         if (getLeft() < worldBounds.getLeft()) {
@@ -168,10 +175,13 @@ public class Ship extends Sprite {
     }
 
     private void shoot() {
-        Bullet bullet = bulletPool.obtain();
-        bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
+        animateTimer += 0.1f;
+        if (animateTimer >= animateInterval) {
+            Bullet bullet = bulletPool.obtain();
+            bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
+            animateTimer = 0f;
+        }
     }
-
 
 }
 

@@ -22,6 +22,7 @@ public class GameScreen extends BaseScreen {
     private Star[] stars;
     private BulletPool bulletPool;
 
+
     @Override
     public void show() {
         super.show();
@@ -31,7 +32,7 @@ public class GameScreen extends BaseScreen {
         mainGameAtlas = new TextureAtlas("textures/mainAtlas.tpack");
         bulletPool = new BulletPool();
         ship = new Ship(mainGameAtlas, bulletPool);
-        stars = new Star[256];
+        stars = new Star[50];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
