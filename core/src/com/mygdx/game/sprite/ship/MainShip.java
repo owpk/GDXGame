@@ -1,10 +1,12 @@
 package com.mygdx.game.sprite.ship;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.math.Rect;
 import com.mygdx.game.pool.BulletPool;
+import com.mygdx.game.pool.ExplosionPool;
 import com.mygdx.game.screen.KeySet;
 
 
@@ -12,13 +14,17 @@ public class MainShip extends Ship {
     private int leftPointer;
     private int rightPointer;
     private static final int INVALID_POINTER = -1;
-
+    private static final int HP = 100;
     private final Vector2 v0;
 
+    private float vPosX;
+    private float vPosY;
 
-    public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
-        super(atlas.findRegion("main_ship"),1,2,2, bulletPool);
+
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
+        super(atlas.findRegion("main_ship"),1,2,2);
         this.bulletPool = bulletPool;
+        this.explosionPool = explosionPool;
 
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletV = new Vector2(0, 0.5f);
@@ -27,6 +33,13 @@ public class MainShip extends Ship {
 
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
+
+        reloadInterval = 0.25f;
+        reloadTimer = reloadInterval;
+        hp = HP;
+        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+
+        reloadInterval = 1.5f;
     }
 
     @Override
@@ -36,28 +49,34 @@ public class MainShip extends Ship {
         setBottom(worldBounds.getBottom() + MARGIN);
     }
 
-    private void posAdd() {
-        position += 0.0014f;
+    private float posXAdd() {
+        vPosX += 0.0014f;
+        return vPosX;
     }
 
-    private void posSub() {
-        position -= 0.0014f;
+    private float posYAdd() {
+        vPosY += 0.0014f;
+        return vPosY;
     }
 
+    private float posXSub() {
+        vPosX -= 0.0014f;
+        return vPosX;
+    }
+    private float posYSub() {
+        vPosY -= 0.0014f;
+        return vPosY;
+    }
 
     public void keyListener(int keycode) {
         if (KeySet.UP.contain(keycode)) {
-            posAdd();
-            pos.add(0, position);
+            pos.add(0, posYAdd());
         } else if (KeySet.DOWN.contain(keycode)) {
-            posSub();
-            pos.add(0, position);
+            pos.add(0, posYSub());
         } else if (KeySet.LEFT.contain(keycode)) {
-            posSub();
-            pos.add(position, 0);
+            pos.add(posXSub(), 0);
         } else if (KeySet.RIGHT.contain(keycode)) {
-            posAdd();
-            pos.add(position, 0);
+            pos.add(posXAdd(), 0);
         }
     }
 
@@ -76,7 +95,10 @@ public class MainShip extends Ship {
         v1.set(v0).rotate(180);
     }
 
-
+    @Override
+    protected void playSound() {
+        sound.play(0.1f);
+    }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
@@ -94,6 +116,14 @@ public class MainShip extends Ship {
             moveRight();
         }
         return false;
+    }
+
+    @Override
+    public void keyUp() {
+        pressed = true;
+        position = 0;
+        vPosX = 0;
+        vPosY = 0;
     }
 
     @Override

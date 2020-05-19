@@ -1,6 +1,7 @@
 package com.mygdx.game.sprite.ship;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,31 +9,40 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.base.Sprite;
 import com.mygdx.game.math.Rect;
 import com.mygdx.game.pool.BulletPool;
+import com.mygdx.game.pool.ExplosionPool;
 import com.mygdx.game.sprite.Bullet;
-import com.mygdx.game.utils.Regions;
 
 public class Ship extends Sprite {
     protected float SIZE = 0.15f;
     protected float MARGIN = 0.05f;
-    protected float animateTimer;
-    protected float animateInterval = 0.7f;
     protected Rect worldBounds;
     protected BulletPool bulletPool;
     protected TextureRegion bulletRegion;
+    protected float bulletHeight;
     protected Vector2 bulletV;
     protected int damage = 1;
     protected int keycode;
     protected boolean pressed;
     protected float position;
     protected final Vector2 v1;
-    protected final Explosion explosion;
+    protected Sound sound;
+    protected ExplosionPool explosionPool;
+    protected float reloadInterval;
+    protected float reloadTimer;
+    protected int hp;
 
-
-    public Ship(TextureRegion region, int rows, int cols, int frames, BulletPool bulletPool) {
+    public Ship(TextureRegion region, int rows, int cols, int frames) {
         super(region, rows, cols, frames);
-        this.bulletPool = bulletPool;
         v1 = new Vector2();
-        explosion = new Explosion();
+    }
+
+    public Ship(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds, Sound sound) {
+        this.bulletPool = bulletPool;
+        this.explosionPool = explosionPool;
+        this.worldBounds = worldBounds;
+        this.sound = sound;
+        v1 = new Vector2();
+        bulletV = new Vector2();
     }
 
     protected void stop() {
@@ -50,11 +60,6 @@ public class Ship extends Sprite {
             setRight(worldBounds.getRight());
             return true;
         }
-        if (getTop() > worldBounds.getTop()) {
-            stop();
-            setTop(worldBounds.getTop());
-            return true;
-        }
         if (getBottom() < worldBounds.getBottom()) {
             stop();
             setBottom(worldBounds.getBottom());
@@ -63,39 +68,35 @@ public class Ship extends Sprite {
         return false;
     }
 
-    protected void playDestroyAnimation() {
-        regions = Explosion.getTextureRegions();
-        animateTimer += 0.1f;
-        if (animateTimer >= explosion.getAnimationInterval()) {
-            if (frame < regions.length - 1)
-                frame++;
-            animateTimer = 0f;
-        }
-    }
-
-
     @Override
     public void update(float delta) {
         pos.mulAdd(v1, delta);
-        if(!destroyed)
+        if (!destroyed) {
             shoot();
-        if(checkCollision()) {
-            destroyed = true;
-        }
-        if(destroyed) {
-            if (!explosion.isPlaying())
-                explosion.playExplosionSFX();
-            playDestroyAnimation();
         }
     }
 
-    protected  void shoot() {
-        animateTimer += 0.1f;
-        if (animateTimer >= animateInterval) {
+    protected void shoot() {
+        reloadTimer += 0.1f;
+        if (reloadTimer >= reloadInterval) {
             Bullet bullet = bulletPool.obtain();
             bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, damage);
-            animateTimer = 0f;
+            reloadTimer = 0f;
+            playSound();
         }
+    }
+
+    protected void playSound() {}
+
+    private void playExplosionAnimation() {
+        Explosion explosion = explosionPool.obtain();
+        explosion.set(getHeight(), pos);
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        playExplosionAnimation();
     }
 
     @Override
