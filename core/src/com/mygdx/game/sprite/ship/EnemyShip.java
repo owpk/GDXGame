@@ -21,15 +21,24 @@ public class EnemyShip extends Ship {
     }
 
     @Override
-    public void resize(Rect worldBounds) {
-        this.worldBounds = worldBounds;
-        setHeightProportion(SIZE);
-        setBottom(worldBounds.getTop() - 0.2f - MARGIN);
+    protected void shoot() {
+        if (worldBounds.getTop() > this.getHalfHeight() + pos.y)
+        super.shoot();
     }
 
     @Override
     protected void playSound() {
-        sound.play(0.4f, 0.2f, 0f);
+        sound.play(1f, 0.2f, 0f);
+    }
+
+    @Override
+    protected boolean checkCollision() {
+        if (getBottom() < worldBounds.getBottom()) {
+            stop();
+            setBottom(worldBounds.getBottom());
+            return true;
+        }
+        return false;
     }
 
     public void set(

@@ -70,17 +70,19 @@ public class Ship extends Sprite {
 
     @Override
     public void update(float delta) {
+        super.update(delta);
         pos.mulAdd(v1, delta);
         if (!destroyed) {
             shoot();
         }
+        checkCollision();
     }
 
     protected void shoot() {
         reloadTimer += 0.1f;
         if (reloadTimer >= reloadInterval) {
             Bullet bullet = bulletPool.obtain();
-            bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, damage);
+            bullet.set(this, bulletRegion, pos, bulletV, 0.015f, worldBounds, damage);
             reloadTimer = 0f;
             playSound();
         }

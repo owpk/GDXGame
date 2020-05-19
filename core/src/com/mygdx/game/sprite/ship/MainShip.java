@@ -71,11 +71,11 @@ public class MainShip extends Ship {
     public void keyListener(int keycode) {
         if (KeySet.UP.contain(keycode)) {
             pos.add(0, posYAdd());
-        } else if (KeySet.DOWN.contain(keycode)) {
+        } if (KeySet.DOWN.contain(keycode)) {
             pos.add(0, posYSub());
-        } else if (KeySet.LEFT.contain(keycode)) {
+        } if (KeySet.LEFT.contain(keycode)) {
             pos.add(posXSub(), 0);
-        } else if (KeySet.RIGHT.contain(keycode)) {
+        } if (KeySet.RIGHT.contain(keycode)) {
             pos.add(posXAdd(), 0);
         }
     }
@@ -83,7 +83,7 @@ public class MainShip extends Ship {
     @Override
     public void update(float delta) {
         if (!pressed)
-        keyListener(keycode);
+            keyListener(keycode);
         super.update(delta);
     }
 
