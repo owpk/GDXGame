@@ -75,7 +75,6 @@ public class Ship extends Sprite {
         if (!destroyed) {
             shoot();
         }
-        checkCollision();
     }
 
     protected void shoot() {
@@ -88,7 +87,13 @@ public class Ship extends Sprite {
         }
     }
 
-    protected void playSound() {}
+    public boolean checkBulletCollision(Bullet bullet) {
+        return bullet.getRight() > this.getLeft() && bullet.getLeft() < this.getRight() &&
+                bullet.getTop() > this.getBottom();
+    }
+
+    protected void playSound() {
+    }
 
     private void playExplosionAnimation() {
         Explosion explosion = explosionPool.obtain();
