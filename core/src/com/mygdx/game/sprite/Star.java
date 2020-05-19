@@ -1,6 +1,7 @@
 package com.mygdx.game.sprite;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import com.mygdx.game.base.Sprite;
@@ -24,6 +25,18 @@ public class Star extends Sprite {
         worldBounds = new Rect();
     }
 
+    public void set(TextureRegion region, Rect worldBounds) {
+        this.regions[0] = region;
+        resize(worldBounds);
+    }
+
+    public Star() {
+        v = new Vector2();
+        float vx = Rnd.nextFloat(-0.005f, 0.005f);
+        float vy = Rnd.nextFloat(-0.2f, -0.05f);
+        v.set(vx, vy);
+        worldBounds = new Rect();
+    }
     @Override
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
