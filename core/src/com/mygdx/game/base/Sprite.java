@@ -15,6 +15,8 @@ public class Sprite extends Rect {
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame = 0;
+    protected float animateTimer;
+    protected float animateInterval = 0.7f;
 
     protected Vector2 v;
     protected Vector2 g;
@@ -59,6 +61,8 @@ public class Sprite extends Rect {
                 angle
         );
     }
+
+
 
     public Vector2 getV() {
         return v;
