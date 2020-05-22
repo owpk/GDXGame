@@ -1,9 +1,6 @@
 package com.mygdx.game.sprite.ship;
 
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.base.Sprite;
@@ -70,6 +67,7 @@ public class Ship extends Sprite {
 
     @Override
     public void update(float delta) {
+        super.update(delta);
         pos.mulAdd(v1, delta);
         if (!destroyed) {
             shoot();
@@ -80,13 +78,19 @@ public class Ship extends Sprite {
         reloadTimer += 0.1f;
         if (reloadTimer >= reloadInterval) {
             Bullet bullet = bulletPool.obtain();
-            bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, damage);
+            bullet.set(this, bulletRegion, pos, bulletV, 0.015f, worldBounds, damage);
             reloadTimer = 0f;
             playSound();
         }
     }
 
-    protected void playSound() {}
+    public boolean checkBulletCollision(Bullet bullet) {
+        return bullet.getRight() > this.getLeft() && bullet.getLeft() < this.getRight() &&
+                bullet.getTop() > this.getBottom();
+    }
+
+    protected void playSound() {
+    }
 
     private void playExplosionAnimation() {
         Explosion explosion = explosionPool.obtain();

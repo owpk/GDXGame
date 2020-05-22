@@ -22,7 +22,7 @@ public class MainShip extends Ship {
 
 
     public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
-        super(atlas.findRegion("main_ship"),1,2,2);
+        super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
 
@@ -39,7 +39,7 @@ public class MainShip extends Ship {
         hp = HP;
         sound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
 
-        reloadInterval = 1.5f;
+        reloadInterval = 2.5f;
     }
 
     @Override
@@ -63,27 +63,29 @@ public class MainShip extends Ship {
         vPosX -= 0.0014f;
         return vPosX;
     }
+
     private float posYSub() {
         vPosY -= 0.0014f;
         return vPosY;
     }
 
     public void keyListener(int keycode) {
-        if (KeySet.UP.contain(keycode)) {
+        if (KeySet.UP.contain(keycode))
             pos.add(0, posYAdd());
-        } else if (KeySet.DOWN.contain(keycode)) {
+        if (KeySet.DOWN.contain(keycode))
             pos.add(0, posYSub());
-        } else if (KeySet.LEFT.contain(keycode)) {
+        if (KeySet.LEFT.contain(keycode))
             pos.add(posXSub(), 0);
-        } else if (KeySet.RIGHT.contain(keycode)) {
+        if (KeySet.RIGHT.contain(keycode))
             pos.add(posXAdd(), 0);
-        }
     }
+
 
     @Override
     public void update(float delta) {
-        if (!pressed)
-        keyListener(keycode);
+        if (!pressed && !destroyed)
+            keyListener(keycode);
+        checkCollision();
         super.update(delta);
     }
 

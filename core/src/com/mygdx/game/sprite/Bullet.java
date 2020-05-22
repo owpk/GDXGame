@@ -24,7 +24,6 @@ public class Bullet extends Sprite {
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
-
         if (isOutside(worldBounds)) {
             destroy();
         }

@@ -12,12 +12,15 @@ import com.mygdx.game.pool.BulletPool;
 import com.mygdx.game.pool.EnemyPool;
 import com.mygdx.game.pool.ExplosionPool;
 import com.mygdx.game.sprite.Background;
+import com.mygdx.game.sprite.Bullet;
 import com.mygdx.game.sprite.ship.EnemyShip;
 import com.mygdx.game.sprite.ship.Explosion;
 import com.mygdx.game.sprite.ship.MainShip;
 import com.mygdx.game.sprite.Star;
 import com.mygdx.game.sprite.ship.Ship;
 import com.mygdx.game.utils.EnemyEmitter;
+
+import java.util.List;
 
 public class GameScreen extends BaseScreen {
 
@@ -31,6 +34,8 @@ public class GameScreen extends BaseScreen {
     private ExplosionPool explosionPool;
     private EnemyPool enemyPool;
     private EnemyEmitter enemyEmitter;
+    private List<EnemyShip> enemyList;
+    private List<Bullet> bulletList;
 
 
     @Override
@@ -41,8 +46,8 @@ public class GameScreen extends BaseScreen {
         atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
         mainGameAtlas = new TextureAtlas("textures/mainAtlas.tpack");
         bulletPool = new BulletPool();
-        mainShip = new MainShip(mainGameAtlas, bulletPool, explosionPool);
         explosionPool = new ExplosionPool(mainGameAtlas);
+        mainShip = new MainShip(mainGameAtlas, bulletPool, explosionPool);
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds);
         enemyEmitter = new EnemyEmitter(mainGameAtlas, enemyPool);
 
@@ -52,12 +57,30 @@ public class GameScreen extends BaseScreen {
         }
     }
 
+    private void checkTargets() {
+        enemyList = enemyPool.getActiveObjects();
+        bulletList = bulletPool.getActiveObjects();
+        for (EnemyShip enemy : enemyList) {
+            if (mainShip.pos.dst(enemy.pos) < enemy.getHalfWidth() + mainShip.getHalfWidth()) {
+                enemy.destroy();
+                mainShip.destroy();
+            }
+            for (Bullet bullet : bulletList) {
+                if (bullet.getOwner() != enemy && enemy.checkBulletCollision(bullet)) {
+                    enemy.destroy();
+                    bullet.destroy();
+                }
+            }
+        }
+    }
+
     @Override
     public void render(float delta) {
         super.render(delta);
         update(delta);
         free();
         draw();
+        checkTargets();
     }
 
     @Override
@@ -108,7 +131,6 @@ public class GameScreen extends BaseScreen {
             star.update(delta);
         }
         bulletPool.updateActiveSprites(delta);
-
         explosionPool.updateActiveSprites(delta);
         mainShip.update(delta);
         enemyEmitter.generate(delta);
@@ -124,10 +146,10 @@ public class GameScreen extends BaseScreen {
     private void draw() {
         batch.begin();
         background.draw(batch);
-        for (Star star : stars) {
+        for (Star star : stars)
             star.draw(batch);
-        }
-        mainShip.draw(batch);
+        if (!mainShip.isDestroyed())
+            mainShip.draw(batch);
         bulletPool.drawActiveSprites(batch);
         enemyPool.drawActiveSprites(batch);
         explosionPool.drawActiveSprites(batch);
