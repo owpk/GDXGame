@@ -25,7 +25,7 @@ public class StartNewGame extends ScaledButton {
         if (animTimer >= animInterval) {
             pi += 0.1f;
             float deltaScale = (float) Math.cos(pi);
-            if (deltaScale < 0.9 && deltaScale > 0.6)
+            if (deltaScale > 0.6)
                 scale = deltaScale + 0.1f;
             animTimer = 0;
         }
