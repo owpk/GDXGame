@@ -27,7 +27,7 @@ public class Sprite extends Rect {
     public static float V_LEN = 0.005f;
 
     public Sprite(TextureRegion region) {
-        v = new Vector2(speed, speed);
+        v = new Vector2();
         g = new Vector2(0, gravity);
         regions = new TextureRegion[1];
         regions[0] = region;

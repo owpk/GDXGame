@@ -7,10 +7,12 @@ import com.mygdx.game.math.Rect;
 import com.mygdx.game.math.Rnd;
 import com.mygdx.game.pool.BulletPool;
 import com.mygdx.game.pool.ExplosionPool;
+import com.mygdx.game.sprite.Bullet;
 
 
 public class EnemyShip extends Ship {
     private float bias;
+    private static final float V_Y = -0.3f;
 
     public EnemyShip(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds, Sound sound) {
         super(bulletPool, explosionPool, worldBounds, sound);
@@ -23,6 +25,7 @@ public class EnemyShip extends Ship {
         if (worldBounds.getTop() > this.getHalfHeight() + pos.y)
         super.shoot();
     }
+
 
     @Override
     protected void playSound() {
@@ -42,7 +45,7 @@ public class EnemyShip extends Ship {
             float height
     ) {
         this.regions = regions;
-        this.v1.set(v0);
+        this.v0.set(v0);
         this.bulletRegion = bulletRegion;
         this.bulletHeight = bulletHeight;
         this.bulletV.set(0, bulletVY);
@@ -51,11 +54,13 @@ public class EnemyShip extends Ship {
         this.reloadTimer = reloadInterval;
         this.hp = hp;
         setHeightProportion(height);
-        this.v1.set(v0);
+        v1.set(0,V_Y);
     }
 
     @Override
     public void update(float delta) {
+        if (getTop() < worldBounds.getTop())
+            v1.set(v0);
         if (Rnd.nextFloat(0,0.5f) > 0.48f)
             moveDown();
         if (checkCollision()) {
@@ -64,6 +69,14 @@ public class EnemyShip extends Ship {
         super.update(delta);
     }
 
+    @Override
+    public boolean checkBulletCollision(Bullet bullet) {
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > getTop()
+                || bullet.getTop() < pos.y
+        );
+    }
     private void moveDown() {
         this.v1.add(0,-0.00015f).add(bias += Rnd.nextFloat(-0.0005f, 0.0005f),0);
     }

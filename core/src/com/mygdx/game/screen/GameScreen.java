@@ -13,6 +13,8 @@ import com.mygdx.game.pool.EnemyPool;
 import com.mygdx.game.pool.ExplosionPool;
 import com.mygdx.game.sprite.Background;
 import com.mygdx.game.sprite.Bullet;
+import com.mygdx.game.sprite.UI.GameOver;
+import com.mygdx.game.sprite.UI.StartNewGame;
 import com.mygdx.game.sprite.ship.EnemyShip;
 import com.mygdx.game.sprite.ship.Explosion;
 import com.mygdx.game.sprite.ship.MainShip;
@@ -36,8 +38,13 @@ public class GameScreen extends BaseScreen {
     private EnemyEmitter enemyEmitter;
     private List<EnemyShip> enemyList;
     private List<Bullet> bulletList;
+    private State state;
+    private GameOver gameOver;
+    private StartNewGame startNewGame;
+//    private HPStatusBar hpStatusBar;
 
 
+    enum State {GAME, GAME_OVER}
     @Override
     public void show() {
         super.show();
@@ -45,12 +52,13 @@ public class GameScreen extends BaseScreen {
         background = new Background(bg);
         atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
         mainGameAtlas = new TextureAtlas("textures/mainAtlas.tpack");
+        gameOver = new GameOver(mainGameAtlas);
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(mainGameAtlas);
         mainShip = new MainShip(mainGameAtlas, bulletPool, explosionPool);
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds);
         enemyEmitter = new EnemyEmitter(mainGameAtlas, enemyPool);
-
+        state = State.GAME;
         stars = new Star[50];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
@@ -58,19 +66,38 @@ public class GameScreen extends BaseScreen {
     }
 
     private void checkTargets() {
+        if (state != State.GAME) {
+            return;
+        }
         enemyList = enemyPool.getActiveObjects();
         bulletList = bulletPool.getActiveObjects();
         for (EnemyShip enemy : enemyList) {
             if (mainShip.pos.dst(enemy.pos) < enemy.getHalfWidth() + mainShip.getHalfWidth()) {
                 enemy.destroy();
                 mainShip.destroy();
+                state = State.GAME_OVER;
             }
             for (Bullet bullet : bulletList) {
-                if (bullet.getOwner() != enemy && enemy.checkBulletCollision(bullet)) {
-                    enemy.destroy();
+                if (bullet.getOwner() != mainShip ||  bullet.isDestroyed()) {
+                    continue;
+                }
+                if (enemy.checkBulletCollision(bullet)) {
+                    enemy.damage(bullet.getDamage());
                     bullet.destroy();
                 }
             }
+        }
+        for (Bullet bullet : bulletList) {
+            if (bullet.getOwner() == mainShip || bullet.isDestroyed()) {
+                continue;
+            }
+            if (mainShip.checkBulletCollision(bullet)) {
+                mainShip.damage(bullet.getDamage());
+                bullet.destroy();
+            }
+        }
+        if (mainShip.isDestroyed()) {
+            state = State.GAME_OVER;
         }
     }
 
@@ -88,6 +115,7 @@ public class GameScreen extends BaseScreen {
         background.resize(worldBounds);
         mainShip.resize(worldBounds);
         enemyEmitter.resize(worldBounds);
+        gameOver.resize(worldBounds);
         for (Star star : stars) {
             star.resize(worldBounds);
         }
@@ -130,11 +158,13 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
-        bulletPool.updateActiveSprites(delta);
         explosionPool.updateActiveSprites(delta);
-        mainShip.update(delta);
-        enemyEmitter.generate(delta);
-        enemyPool.updateActiveSprites(delta);
+        if (state == State.GAME) {
+            mainShip.update(delta);
+            bulletPool.updateActiveSprites(delta);
+            enemyPool.updateActiveSprites(delta);
+            enemyEmitter.generate(delta);
+        }
     }
 
     private void free() {
@@ -148,11 +178,14 @@ public class GameScreen extends BaseScreen {
         background.draw(batch);
         for (Star star : stars)
             star.draw(batch);
-        if (!mainShip.isDestroyed())
-            mainShip.draw(batch);
-        bulletPool.drawActiveSprites(batch);
-        enemyPool.drawActiveSprites(batch);
         explosionPool.drawActiveSprites(batch);
+        enemyPool.drawActiveSprites(batch);
+        if (state == State.GAME) {
+            mainShip.draw(batch);
+            bulletPool.drawActiveSprites(batch);
+        } else if (state == State.GAME_OVER) {
+            gameOver.draw(batch);
+        }
         batch.end();
     }
 }

@@ -12,6 +12,8 @@ import com.mygdx.game.base.BaseScreen;
 
 import com.mygdx.game.math.Rect;
 import com.mygdx.game.sprite.*;
+import com.mygdx.game.sprite.UI.ButtonExit;
+import com.mygdx.game.sprite.UI.ButtonPlay;
 
 public class MenuScreen extends BaseScreen {
 
@@ -21,8 +23,8 @@ public class MenuScreen extends BaseScreen {
     private Background background;
     private Logo logo;
     private TextureAtlas atlas;
-    private ButtonExit buttonExit;
-    private ButtonPlay buttonPlay;
+    private com.mygdx.game.sprite.UI.ButtonExit buttonExit;
+    private com.mygdx.game.sprite.UI.ButtonPlay buttonPlay;
     private Star[] stars;
 
     public MenuScreen(Game game) {
