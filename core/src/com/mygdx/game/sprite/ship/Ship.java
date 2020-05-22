@@ -22,15 +22,19 @@ public class Ship extends Sprite {
     protected boolean pressed;
     protected float position;
     protected final Vector2 v1;
+    protected final Vector2 v0;
     protected Sound sound;
     protected ExplosionPool explosionPool;
     protected float reloadInterval;
     protected float reloadTimer;
+    protected float damageAnimateTimer;
     protected int hp;
+    protected static final float DAMAGE_ANIMATE_INTERVAL = 0.06f;
 
     public Ship(TextureRegion region, int rows, int cols, int frames) {
         super(region, rows, cols, frames);
         v1 = new Vector2();
+        v0 = new Vector2();
     }
 
     public Ship(BulletPool bulletPool, ExplosionPool explosionPool, Rect worldBounds, Sound sound) {
@@ -39,7 +43,22 @@ public class Ship extends Sprite {
         this.worldBounds = worldBounds;
         this.sound = sound;
         v1 = new Vector2();
+        v0 = new Vector2();
         bulletV = new Vector2();
+    }
+
+    public void damage(int damage) {
+        damageAnimateTimer = 0f;
+        frame = 1;
+        hp -= damage;
+        if (hp <= 0) {
+            hp = 0;
+            destroy();
+        }
+    }
+
+    public int getDamage() {
+        return damage;
     }
 
     protected void stop() {
@@ -72,6 +91,10 @@ public class Ship extends Sprite {
         if (!destroyed) {
             shoot();
         }
+        damageAnimateTimer += delta;
+        if (damageAnimateTimer >= DAMAGE_ANIMATE_INTERVAL) {
+            frame = 0;
+        }
     }
 
     protected void shoot() {
@@ -85,8 +108,11 @@ public class Ship extends Sprite {
     }
 
     public boolean checkBulletCollision(Bullet bullet) {
-        return bullet.getRight() > this.getLeft() && bullet.getLeft() < this.getRight() &&
-                bullet.getTop() > this.getBottom();
+        return !(bullet.getRight() < getLeft()
+                || bullet.getLeft() > getRight()
+                || bullet.getBottom() > pos.y
+                || bullet.getTop() < getBottom()
+        );
     }
 
     protected void playSound() {
