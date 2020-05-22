@@ -1,12 +1,13 @@
 package com.mygdx.game.base;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class ScaledButton extends Sprite {
 
     private static final float SCALE = 0.9f;
-
+    protected Game game;
     private boolean pressed;
     private int pointer;
 

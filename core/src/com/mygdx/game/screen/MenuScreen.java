@@ -31,6 +31,10 @@ public class MenuScreen extends BaseScreen {
         this.game = game;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
     @Override
     public void show() {
         super.show();
