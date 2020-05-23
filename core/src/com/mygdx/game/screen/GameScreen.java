@@ -32,6 +32,7 @@ public class GameScreen extends BaseScreen {
     private Ship mainShip;
     private TextureAtlas atlas;
     private TextureAtlas mainGameAtlas;
+    private TextureAtlas uiAtlas;
     private Star[] stars;
     private BulletPool bulletPool;
     private ExplosionPool explosionPool;
@@ -43,6 +44,7 @@ public class GameScreen extends BaseScreen {
     private GameOver gameOver;
     private StartNewGame startNewGame;
     private Game game;
+
 //    private HPStatusBar hpStatusBar;
 
     public GameScreen(Game game) {
@@ -55,10 +57,11 @@ public class GameScreen extends BaseScreen {
         super.show();
         bg = new Texture("cyan gradient.png");
         background = new Background(bg);
+        uiAtlas = new TextureAtlas(Gdx.files.internal("textures/Ui.atlas"));
         atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
         mainGameAtlas = new TextureAtlas("textures/mainAtlas.tpack");
-        gameOver = new GameOver(mainGameAtlas);
-        startNewGame = new StartNewGame(mainGameAtlas, game);
+        gameOver = new GameOver(uiAtlas);
+        startNewGame = new StartNewGame(uiAtlas, game);
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(mainGameAtlas);
         mainShip = new MainShip(mainGameAtlas, bulletPool, explosionPool);

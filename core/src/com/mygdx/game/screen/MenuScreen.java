@@ -23,6 +23,7 @@ public class MenuScreen extends BaseScreen {
     private Background background;
     private Logo logo;
     private TextureAtlas atlas;
+    private TextureAtlas starAtlas;
     private com.mygdx.game.sprite.UI.ButtonExit buttonExit;
     private com.mygdx.game.sprite.UI.ButtonPlay buttonPlay;
     private Star[] stars;
@@ -42,13 +43,13 @@ public class MenuScreen extends BaseScreen {
         bg = new Texture("cyan gradient.png");
         logo = new Logo(img);
         background = new Background(bg);
-
-        atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
+        starAtlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
+        atlas = new TextureAtlas(Gdx.files.internal("textures/Ui.atlas"));
         buttonExit = new ButtonExit(atlas);
         buttonPlay = new ButtonPlay(atlas, game);
         stars = new Star[256];
         for (int i = 0; i < stars.length; i++) {
-            stars[i] = new Star(atlas);
+            stars[i] = new Star(starAtlas);
         }
     }
 
@@ -65,6 +66,7 @@ public class MenuScreen extends BaseScreen {
     }
 
     private void update(float delta) {
+        buttonPlay.update(delta);
         for (Star star : stars) {
             star.update(delta);
         }

@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class ScaledButton extends Sprite {
+    protected float animInterval = 0.10f;
+    protected float animTimer;
+    protected float pi;
+    protected float deltaSize = 0.8f;
 
     private static final float SCALE = 0.9f;
     protected Game game;
@@ -13,6 +17,17 @@ public abstract class ScaledButton extends Sprite {
 
     public ScaledButton(TextureRegion region) {
         super(region);
+    }
+
+    protected void playAnimation() {
+        animTimer += 0.1f;
+        if (animTimer >= animInterval) {
+            pi += 0.1f;
+            float deltaScale = (float) Math.cos(pi);
+            if (deltaScale > 0.6)
+                scale = deltaScale + deltaSize;
+            animTimer = 0;
+        }
     }
 
     @Override
