@@ -48,6 +48,7 @@ public class EnemyEmitter {
     private final TextureRegion bulletRegion;
 
     private final EnemyPool enemyPool;
+    private int level;
 
     public EnemyEmitter(TextureAtlas atlas, EnemyPool enemyPool) {
         TextureRegion enemy0 = atlas.findRegion("enemy0");
@@ -61,6 +62,7 @@ public class EnemyEmitter {
         this.enemyBigV = new Vector2(0, -0.005f);
         this.bulletRegion = atlas.findRegion("bulletEnemy");
         this.enemyPool = enemyPool;
+        level = 1;
     }
 
     public void resize(Rect worldBounds) {
@@ -113,5 +115,9 @@ public class EnemyEmitter {
             enemy.pos.x = Rnd.nextFloat(worldBounds.getLeft() + enemy.getHalfWidth(), worldBounds.getRight() - enemy.getHalfWidth());
             enemy.setBottom(worldBounds.getTop());
         }
+    }
+
+    public int getLevel() {
+        return level;
     }
 }
