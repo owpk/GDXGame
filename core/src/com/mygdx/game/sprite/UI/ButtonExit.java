@@ -14,14 +14,13 @@ public class ButtonExit extends ScaledButton {
     private static final float MARGIN = 0.05f;
 
     public ButtonExit(TextureAtlas atlas) {
-        super(atlas.findRegion("btExit"));
+        super(atlas.findRegion("exit"));
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.2f);
-        setBottom(worldBounds.getBottom() + MARGIN);
-        setRight(worldBounds.getRight() - MARGIN);
+        setHeightProportion(0.1f);
+        setTop(worldBounds.getTop() - MARGIN * 11);
     }
 
     @Override

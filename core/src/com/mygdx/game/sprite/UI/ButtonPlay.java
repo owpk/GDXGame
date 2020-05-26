@@ -12,24 +12,28 @@ import com.mygdx.game.screen.GameScreen;
 
 public class ButtonPlay extends ScaledButton {
 
-    private final Game game;
-
     private static final float MARGIN = 0.05f;
 
     public ButtonPlay(TextureAtlas atlas, Game game) {
-        super(atlas.findRegion("btPlay"));
+        super(atlas.findRegion("play"));
         this.game = game;
+        this.deltaSize = 0.6f;
+    }
+
+    @Override
+    public void update(float delta) {
+        playAnimation();
+        super.update(delta);
     }
 
     @Override
     public void resize(Rect worldBounds) {
-        setHeightProportion(0.25f);
-        setBottom(worldBounds.getBottom() + MARGIN);
-        setLeft(worldBounds.getLeft() + MARGIN);
+        setHeightProportion(0.1f);
+        setTop(worldBounds.getTop() - MARGIN * 8);
     }
 
     @Override
     public void action() {
-        game.setScreen(new GameScreen());
+        game.setScreen(new GameScreen(game));
     }
 }
