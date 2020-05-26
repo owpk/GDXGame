@@ -1,8 +1,5 @@
 package com.mygdx.game.sprite.UI;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.mygdx.game.base.Sprite;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 

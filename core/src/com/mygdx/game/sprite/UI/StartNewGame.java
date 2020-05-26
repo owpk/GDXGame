@@ -9,10 +9,10 @@ import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.sprite.Bullet;
 
 public class StartNewGame extends ScaledButton {
-
-    public StartNewGame(TextureAtlas atlas, Game game) {
+    private GameScreen gameScreen;
+    public StartNewGame(TextureAtlas atlas, GameScreen gameScreen) {
         super(atlas.findRegion("newGame"));
-        this.game = game;
+        this.gameScreen = gameScreen;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class StartNewGame extends ScaledButton {
 
     @Override
     public void action() {
-        game.setScreen(new GameScreen(game));
+        gameScreen.startNewGame();
     }
 
     @Override

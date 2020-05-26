@@ -57,8 +57,8 @@ public class Ship extends Sprite {
         }
     }
 
-    public int getDamage() {
-        return damage;
+    public void setDefaults() {
+
     }
 
     protected void stop() {
@@ -145,6 +145,10 @@ public class Ship extends Sprite {
         position = 0;
     }
 
+    public void dispose() {
+        sound.dispose();
+    }
+
     public void setBulletV(float speed) {
         v.y = speed;
     }
@@ -159,5 +163,17 @@ public class Ship extends Sprite {
 
     public void setMARGIN(float MARGIN) {
         this.MARGIN = MARGIN;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public void setHp(int i) {
+        hp = i;
     }
 }

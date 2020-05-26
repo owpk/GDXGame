@@ -46,6 +46,11 @@ public class MainShip extends Ship {
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
         setHeightProportion(SIZE);
+        setDefaultPos();
+    }
+
+    private void setDefaultPos() {
+        pos.x = 0;
         setBottom(worldBounds.getBottom() + MARGIN);
     }
 
@@ -146,6 +151,16 @@ public class MainShip extends Ship {
             }
         }
         return false;
+    }
+
+    @Override
+    public void setDefaults() {
+        hp = HP;
+        leftPointer = INVALID_POINTER;
+        rightPointer = INVALID_POINTER;
+        stop();
+        setDefaultPos();
+        flushDestroy();
     }
 
 }
