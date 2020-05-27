@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class ScaledButton extends Sprite {
-    protected float animInterval = 0.10f;
+    protected float animInterval = 0.1f;
     protected float animTimer;
     protected float pi;
     protected float deltaSize = 0.8f;

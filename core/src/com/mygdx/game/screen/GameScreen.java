@@ -40,6 +40,7 @@ public class GameScreen extends BaseScreen {
     private TextureAtlas atlas;
     private TextureAtlas mainGameAtlas;
     private TextureAtlas uiAtlas;
+    private TextureAtlas shipAtlas;
     private Star[] stars;
     private BulletPool bulletPool;
     private ExplosionPool explosionPool;
@@ -51,6 +52,10 @@ public class GameScreen extends BaseScreen {
     private GameOver gameOver;
     private StartNewGame startNewGame;
     private Music music;
+    private static final float RELOAD_STAGE_TIMER = 1f;
+    private float reloadStageTimer;
+    boolean stageOver;
+
     private Game game;
 
     private int frags;
@@ -81,12 +86,13 @@ public class GameScreen extends BaseScreen {
         background = new Background(bg);
         uiAtlas = new TextureAtlas(Gdx.files.internal("textures/Ui.atlas"));
         atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
+        shipAtlas = new TextureAtlas(Gdx.files.internal("textures/m_ship/shipp.atlas"));
         mainGameAtlas = new TextureAtlas("textures/mainAtlas.tpack");
         gameOver = new GameOver(uiAtlas);
         startNewGame = new StartNewGame(uiAtlas, this);
         bulletPool = new BulletPool();
         explosionPool = new ExplosionPool(mainGameAtlas);
-        mainShip = new MainShip(mainGameAtlas, bulletPool, explosionPool);
+        mainShip = new MainShip(shipAtlas, bulletPool, explosionPool);
         enemyPool = new EnemyPool(bulletPool, explosionPool, worldBounds);
         enemyEmitter = new EnemyEmitter(mainGameAtlas, enemyPool);
         state = State.GAME;
@@ -114,7 +120,9 @@ public class GameScreen extends BaseScreen {
             float minDist = enemy.getHalfWidth() + mainShip.getHalfWidth();
             if (mainShip.pos.dst(enemy.pos) < minDist) {
                 enemy.destroy();
+                enemy.playExplosionAnimation();
                 mainShip.destroy();
+                mainShip.playExplosionAnimation();
                 mainShip.setHp(0);
                 continue;
             }
@@ -126,6 +134,7 @@ public class GameScreen extends BaseScreen {
                     enemy.damage(bullet.getDamage());
                     bullet.destroy();
                     if (enemy.isDestroyed()) {
+                        enemy.playExplosionAnimation();
                         frags += 1;
                     }
                 }
@@ -141,6 +150,7 @@ public class GameScreen extends BaseScreen {
             }
         }
         if (mainShip.isDestroyed()) {
+            mainShip.playExplosionAnimation();
             state = State.GAME_OVER;
         }
     }
@@ -206,6 +216,33 @@ public class GameScreen extends BaseScreen {
         return super.touchUp(touch, pointer, button);
     }
 
+    private void checkStage(float delta) {
+        if (frags < 10)
+            switchStage(1, delta);
+        if (frags >= 10 && frags <= 20)
+            switchStage(2, delta);
+        if (frags >= 20)
+            switchStage(3, delta);
+    }
+
+    private void switchStage(int i, float delta) {
+        switch (i) {
+            case 1:
+                enemyEmitter.generateSmallGroup(delta);
+                break;
+            case 2:
+                enemyEmitter.setLevel(2);
+                enemyEmitter.generateMedium(delta);
+                break;
+            case 3:
+                enemyEmitter.setLevel(3);
+                enemyEmitter.setFlag(frags >= 20 && frags <= 30);
+                enemyEmitter.generateBig(delta);
+                break;
+        }
+
+    }
+
     private void update(float delta) {
         for (Star star : stars) {
             star.update(delta);
@@ -215,7 +252,7 @@ public class GameScreen extends BaseScreen {
             mainShip.update(delta);
             bulletPool.updateActiveSprites(delta);
             enemyPool.updateActiveSprites(delta);
-            enemyEmitter.generate(delta);
+            checkStage(delta);
         }
         startNewGame.update(delta);
     }
@@ -250,7 +287,7 @@ public class GameScreen extends BaseScreen {
         sbLevel.setLength(0);
         font.draw(batch, sbFrags.append(FRAGS).append(frags), worldBounds.getLeft() + TEXT_MARGIN, worldBounds.getTop() - TEXT_MARGIN);
         font.draw(batch, sbHp.append(HP).append(mainShip.getHp()), worldBounds.pos.x, worldBounds.getTop() - TEXT_MARGIN, Align.center);
-        font.draw(batch, sbHp, mainShip.pos.x, mainShip.getBottom() - TEXT_MARGIN, Align.center);
+        //font.draw(batch, sbHp, mainShip.pos.x, mainShip.getBottom() - TEXT_MARGIN, Align.center);
         font.draw(batch, sbLevel.append(LEVEL).append(enemyEmitter.getLevel()), worldBounds.getRight() - TEXT_MARGIN, worldBounds.getTop() - TEXT_MARGIN, Align.right);
     }
 }

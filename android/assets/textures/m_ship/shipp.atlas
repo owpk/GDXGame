@@ -1,0 +1,19 @@
+
+shipp.png
+format: RGBA8888
+filter: MipMapLinearNearest,Nearest
+repeat: none
+ship
+  rotate: false
+  xy: 1, 30
+  size: 751, 381
+  orig: 751, 381
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 1, 1
+  size: 10, 27
+  orig: 10, 27
+  offset: 0, 0
+  index: -1
