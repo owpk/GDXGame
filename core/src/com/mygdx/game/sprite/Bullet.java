@@ -29,6 +29,10 @@ public class Bullet extends Sprite {
         }
     }
 
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
     public void set(
             Sprite owner,
             TextureRegion region,

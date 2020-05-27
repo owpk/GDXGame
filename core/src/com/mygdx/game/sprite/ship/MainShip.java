@@ -22,11 +22,11 @@ public class MainShip extends Ship {
 
 
     public MainShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
-        super(atlas.findRegion("main_ship"), 1, 2, 2);
+        super(atlas.findRegion("ship"), 1, 5, 4);
         this.bulletPool = bulletPool;
         this.explosionPool = explosionPool;
 
-        bulletRegion = atlas.findRegion("bulletMainShip");
+        bulletRegion = atlas.findRegion("bullet");
         bulletV = new Vector2(0, 0.5f);
 
         v0 = new Vector2(0.5f, 0);
@@ -34,12 +34,25 @@ public class MainShip extends Ship {
         leftPointer = INVALID_POINTER;
         rightPointer = INVALID_POINTER;
 
-        reloadInterval = 0.25f;
-        reloadTimer = reloadInterval;
+        bulletHeight = 0.03f;
+        frame = 1;
         hp = HP;
+        damage = 10;
+        animateInterval = 0.05f;
         sound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        reloadInterval = 1f;
+    }
 
-        reloadInterval = 2.5f;
+    private void playAnimation(float delta) {
+        animateTimer += delta;
+        if (animateTimer >= animateInterval) {
+            animateTimer = 0f;
+            frame++;
+            if (frame == regions.length - 1) {
+                  frame = 1;
+            }
+
+        }
     }
 
     @Override
@@ -88,6 +101,7 @@ public class MainShip extends Ship {
 
     @Override
     public void update(float delta) {
+        playAnimation(delta);
         if (!pressed && !destroyed)
             keyListener(keycode);
         checkCollision();

@@ -29,7 +29,7 @@ public class Ship extends Sprite {
     protected float reloadTimer;
     protected float damageAnimateTimer;
     protected int hp;
-    protected static final float DAMAGE_ANIMATE_INTERVAL = 0.06f;
+    protected static final float DAMAGE_ANIMATE_INTERVAL = 0.08f;
 
     public Ship(TextureRegion region, int rows, int cols, int frames) {
         super(region, rows, cols, frames);
@@ -65,7 +65,7 @@ public class Ship extends Sprite {
         v1.setZero();
     }
 
-    protected boolean checkCollision() {
+    protected boolean checkXCol() {
         if (getLeft() < worldBounds.getLeft()) {
             stop();
             setLeft(worldBounds.getLeft());
@@ -76,11 +76,26 @@ public class Ship extends Sprite {
             setRight(worldBounds.getRight());
             return true;
         }
+        return false;
+    }
+
+    protected boolean checkYCol() {
         if (getBottom() < worldBounds.getBottom()) {
             stop();
             setBottom(worldBounds.getBottom());
             return true;
         }
+        if (getTop() > worldBounds.getTop()) {
+            stop();
+            setTop(worldBounds.getTop());
+            return true;
+        }
+        return false;
+    }
+
+    protected boolean checkCollision() {
+        checkXCol();
+        checkYCol();
         return false;
     }
 
@@ -92,16 +107,18 @@ public class Ship extends Sprite {
             shoot();
         }
         damageAnimateTimer += delta;
+    }
+
+    protected void setDamageFrame() {
         if (damageAnimateTimer >= DAMAGE_ANIMATE_INTERVAL) {
             frame = 0;
         }
     }
-
     protected void shoot() {
         reloadTimer += 0.1f;
         if (reloadTimer >= reloadInterval) {
             Bullet bullet = bulletPool.obtain();
-            bullet.set(this, bulletRegion, pos, bulletV, 0.015f, worldBounds, damage);
+            bullet.set(this, bulletRegion, pos, bulletV, bulletHeight, worldBounds, damage);
             reloadTimer = 0f;
             playSound();
         }
@@ -118,7 +135,7 @@ public class Ship extends Sprite {
     protected void playSound() {
     }
 
-    private void playExplosionAnimation() {
+    public void playExplosionAnimation() {
         Explosion explosion = explosionPool.obtain();
         explosion.set(getHeight(), pos);
     }
@@ -126,7 +143,6 @@ public class Ship extends Sprite {
     @Override
     public void destroy() {
         super.destroy();
-        playExplosionAnimation();
     }
 
     @Override

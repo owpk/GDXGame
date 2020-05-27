@@ -11,28 +11,30 @@ import com.mygdx.game.sprite.ship.EnemyShip;
 
 public class EnemyEmitter {
 
-    private static final float GENERATE_INTERVAL = 4f;
+    private static float generateInterval = 2f;
+    private static final float SMALL_GRP_GEN = 0.5f;
+    private static final float BIG_GRP_GEN = 4f;
 
     private static final float ENEMY_SMALL_HEIGHT = 0.1f;
     private static final int ENEMY_SMALL_HP = 1;
-    private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.01f;
+    private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.015f;
     private static final float ENEMY_SMALL_BULLET_VY = -0.3f;
-    private static final int ENEMY_SMALL_BULLET_DAMAGE = 1;
+    private static final int ENEMY_SMALL_BULLET_DAMAGE = 5;
     private static final float ENEMY_SMALL_RELOAD_INTERVAL = 10f;
 
     private static final float ENEMY_MEDIUM_HEIGHT = 0.15f;
-    private static final int ENEMY_MEDIUM_HP = 5;
+    private static final int ENEMY_MEDIUM_HP = 30;
     private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.02f;
     private static final float ENEMY_MEDIUM_BULLET_VY = -0.25f;
-    private static final int ENEMY_MEDIUM_BULLET_DAMAGE = 5;
+    private static final int ENEMY_MEDIUM_BULLET_DAMAGE = 15;
     private static final float ENEMY_MEDIUM_RELOAD_INTERVAL = 9f;
 
     private static final float ENEMY_BIG_HEIGHT = 0.2f;
-    private static final int ENEMY_BIG_HP = 10;
-    private static final float ENEMY_BIG_BULLET_HEIGHT = 0.04f;
+    private static final int ENEMY_BIG_HP = 50;
+    private static final float ENEMY_BIG_BULLET_HEIGHT = 0.03f;
     private static final float ENEMY_BIG_BULLET_VY = -0.3f;
-    private static final int ENEMY_BIG_BULLET_DAMAGE = 10;
-    private static final float ENEMY_BIG_RELOAD_INTERVAL = 8f;
+    private static final int ENEMY_BIG_BULLET_DAMAGE = 25;
+    private static final float ENEMY_BIG_RELOAD_INTERVAL = 1f;
 
     private Rect worldBounds;
     private float generateTimer;
@@ -48,7 +50,9 @@ public class EnemyEmitter {
     private final TextureRegion bulletRegion;
 
     private final EnemyPool enemyPool;
+    private EnemyShip enemy;
     private int level;
+    private boolean flag;
 
     public EnemyEmitter(TextureAtlas atlas, EnemyPool enemyPool) {
         TextureRegion enemy0 = atlas.findRegion("enemy0");
@@ -69,13 +73,13 @@ public class EnemyEmitter {
         this.worldBounds = worldBounds;
     }
 
-    public void generate(float delta) {
+    public void generateSmallGroup(float delta) {
         generateTimer += delta;
-        if (generateTimer >= GENERATE_INTERVAL) {
-            generateTimer = 0f;
-            EnemyShip enemy = enemyPool.obtain();
-            float type = (float) Math.random();
-            if (type < 0.5f) {
+        if (enemyPool.getActiveObjects().size() < 5) {
+            if (generateTimer >= SMALL_GRP_GEN) {
+                generateTimer = 0f;
+                enemy = enemyPool.obtain();
+                enemy.setBottom(worldBounds.getTop());
                 enemy.set(
                         enemySmallRegions,
                         enemySmallV,
@@ -87,37 +91,77 @@ public class EnemyEmitter {
                         ENEMY_SMALL_HP,
                         ENEMY_SMALL_HEIGHT
                 );
-            } else if (type < 0.8f) {
-                enemy.set(
-                        enemyMediumRegions,
-                        enemyMediumV,
-                        bulletRegion,
-                        ENEMY_MEDIUM_BULLET_HEIGHT,
-                        ENEMY_MEDIUM_BULLET_VY,
-                        ENEMY_MEDIUM_BULLET_DAMAGE,
-                        ENEMY_MEDIUM_RELOAD_INTERVAL,
-                        ENEMY_MEDIUM_HP,
-                        ENEMY_MEDIUM_HEIGHT
-                );
-            } else {
-                enemy.set(
-                        enemyBigRegions,
-                        enemyBigV,
-                        bulletRegion,
-                        ENEMY_BIG_BULLET_HEIGHT,
-                        ENEMY_BIG_BULLET_VY,
-                        ENEMY_BIG_BULLET_DAMAGE,
-                        ENEMY_BIG_RELOAD_INTERVAL,
-                        ENEMY_BIG_HP,
-                        ENEMY_BIG_HEIGHT
-                );
             }
-            enemy.pos.x = Rnd.nextFloat(worldBounds.getLeft() + enemy.getHalfWidth(), worldBounds.getRight() - enemy.getHalfWidth());
-            enemy.setBottom(worldBounds.getTop());
         }
+
+    }
+
+    public void generateMedium(float delta) {
+        generateInterval = 2f;
+        generateTimer += delta;
+        if (generateTimer >= generateInterval) {
+            generateTimer = 0f;
+            enemy = enemyPool.obtain();
+            enemy.setBottom(worldBounds.getTop());
+            enemy.set(
+                    enemyMediumRegions,
+                    enemyMediumV,
+                    bulletRegion,
+                    ENEMY_MEDIUM_BULLET_HEIGHT,
+                    ENEMY_MEDIUM_BULLET_VY,
+                    ENEMY_MEDIUM_BULLET_DAMAGE,
+                    ENEMY_MEDIUM_RELOAD_INTERVAL,
+                    ENEMY_MEDIUM_HP,
+                    ENEMY_MEDIUM_HEIGHT
+            );
+        }
+    }
+
+    public void generateBig(float delta) {
+        generateTimer += delta;
+        if (generateTimer >= BIG_GRP_GEN) {
+            generateTimer = 0f;
+            enemy = enemyPool.obtain();
+            enemy.setBottom(worldBounds.getTop());
+            enemy.set(
+                    enemyBigRegions,
+                    enemyBigV,
+                    bulletRegion,
+                    ENEMY_BIG_BULLET_HEIGHT,
+                    ENEMY_BIG_BULLET_VY,
+                    ENEMY_BIG_BULLET_DAMAGE,
+                    ENEMY_BIG_RELOAD_INTERVAL,
+                    ENEMY_BIG_HP,
+                    ENEMY_BIG_HEIGHT
+            );
+        }
+        if (generateTimer >= SMALL_GRP_GEN && flag) {
+            generateTimer = 0f;
+            enemy = enemyPool.obtain();
+            enemy.setBottom(worldBounds.getTop());
+            enemy.set(
+                    enemySmallRegions,
+                    enemySmallV,
+                    bulletRegion,
+                    ENEMY_SMALL_BULLET_HEIGHT,
+                    ENEMY_SMALL_BULLET_VY,
+                    ENEMY_SMALL_BULLET_DAMAGE,
+                    ENEMY_SMALL_RELOAD_INTERVAL,
+                    ENEMY_SMALL_HP,
+                    ENEMY_SMALL_HEIGHT
+            );
+        }
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 
     public int getLevel() {
         return level;
+    }
+
+    public void setLevel(int l) {
+        level = l;
     }
 }
